@@ -1,8 +1,11 @@
 #map {
-  height: 900px;
-  width: 100%; /* Adjust to your desired width */
+  position: relative;
+  left:200px;
+  height: 600px;
+  width: 1100px; /* Adjust to your desired width */
   max-width: 1600px;
 }
+
 
 
 

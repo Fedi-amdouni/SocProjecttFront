@@ -59,17 +59,13 @@ export class HomeComponent implements AfterViewInit {
     });
 
 
+
     this.map.addControl(new tt.GeolocateControl({
       positionOptions: {
         enableHighAccuracy: true
 
       },
-      trackUserLocation: true,
-      showAccuracyCircle:true
-
     }));
-
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position: any) => {
@@ -77,7 +73,16 @@ export class HomeComponent implements AfterViewInit {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
           };
+          const zoom = 12;
+          // Calculate x and y coordinates for traffic flow tiles
+          const x = this.lon2tile(userLocation.lng, zoom);
+          const y = this.lat2tile(userLocation.lat, zoom);
 
+          var marker = new tt.Marker( {
+            color: 'red',
+          })
+            .setLngLat([userLocation.lng, userLocation.lat])
+            .addTo(this.map);
 
 
           this.map.flyTo({
@@ -85,18 +90,6 @@ export class HomeComponent implements AfterViewInit {
             zoom: 17,
           });
 
-          const zoom = 12; // Set your desired zoom level
-
-          // Calculate x and y coordinates for traffic flow tiles
-          const x = this.lon2tile(userLocation.lng, zoom);
-          const y = this.lat2tile(userLocation.lat, zoom);
-
-          var marker = new tt.Marker()
-            .setLngLat([userLocation.lng, userLocation.lat])
-            .addTo(this.map);
-
-
-          // Construct the traffic flow URL
           const trafficFlowURL = `https://api.tomtom.com/traffic/map/4/tile/flow/relative0-dark/${zoom}/${x}/${y}.png?tileSize=512&key=${environment.tomtom.key}`;
 
           // Add traffic flow as a raster layer
@@ -131,11 +124,7 @@ export class HomeComponent implements AfterViewInit {
     }
   }
 
-  private createCustomMarker() {
-    const markerElement = document.createElement('div');
-    markerElement.className = 'custom-marker';
-    return markerElement;
-  }
+
 
 
 
